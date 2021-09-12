@@ -1,11 +1,13 @@
 const { ApolloServer } = require("apollo-server");
 const { ApolloGateway, RemoteGraphQLDataSource } = require("@apollo/gateway");
-
-const astraToken = process.env.REACT_APP_ASTRA_TOKEN;
+require("dotenv").config();
 
 class StargateGraphQLDataSource extends RemoteGraphQLDataSource {
   willSendRequest({ request, context }) {
-    request.http.headers.set("x-cassandra-token", astraToken);
+    request.http.headers.set(
+      "x-cassandra-token",
+      process.env.REACT_APP_ASTRA_TOKEN
+    );
   }
 }
 
@@ -13,7 +15,7 @@ const gateway = new ApolloGateway({
   serviceList: [
     {
       name: "coins",
-      url: "https://1c671ec1-e2c9-4690-bc2f-8af68e897517-westeurope.apps.astra.datastax.com/api/graphql/coins",
+      url: "https://f83d3bef-1da3-4ce2-a905-05ea041ebc19-southcentralus.apps.astra.datastax.com/api/graphql/coins",
     },
     {
       name: "deals",
@@ -22,7 +24,7 @@ const gateway = new ApolloGateway({
   ],
 
   introspectionHeaders: {
-    "x-cassandra-token": astraToken,
+    "x-cassandra-token": process.env.REACT_APP_ASTRA_TOKEN,
   },
 
   buildService({ name, url }) {
